@@ -1,22 +1,31 @@
 # Go Store
 
-Plataforma de código abierto para que una persona pueda crear, personalizar y operar su tienda online sin programar.
+**Una forma sencilla y gratuita de llevar un emprendimiento a la web.**
 
-> **Estado:** en etapa inicial. Este repositorio conserva el prototipo de tienda Grano Vivo como ejemplo visual. El creador de tiendas todavía es el siguiente hito; aún no hay registro real, persistencia de pedidos ni pagos conectados.
+## Visión
 
-## Objetivo
+Muchos emprendimientos ofrecen sus productos o servicios de manera informal a través de canales como WhatsApp o Telegram, sin una página web ordenada que presente su propuesta. Esto puede reducir su visibilidad, dificultar que nuevos clientes encuentren lo que ofrecen y hacer que se pierdan oportunidades de venta.
 
-Go Store permitirá registrarse con email y comenzar a personalizar una tienda desde un editor guiado: marca y logo, portada, categorías, productos, precios, fotos, disponibilidad y opciones de retiro o entrega. La misma aplicación publicará la tienda para clientes y ofrecerá un panel para gestionar pedidos.
+Go Store busca ayudar a cerrar esa brecha. La plataforma permitirá que cualquier persona pueda crear una tienda web sencilla, clara y efectiva para su emprendimiento, sin conocimientos de programación ni de infraestructura.
 
-## Qué incluye hoy
+Con una guía paso a paso, cada emprendedor podrá personalizar su tienda, ordenar su catálogo de productos o servicios y dejarla lista para que sus clientes conozcan su oferta y realicen pedidos.
 
-- `examples/grano-vivo-demo/`: prototipo estático del recorrido de tienda para una marca gastronómica de ejemplo.
-- Interfaz de menú, búsqueda, carrito, checkout y panel de demostración.
-- Fotos de packaging generadas para el prototipo.
+Go Store está pensada para quienes recién comienzan: **crear y editar una tienda no tendrá costo**. El proyecto es de código abierto y busca que más emprendimientos puedan tener una presencia web profesional desde el inicio.
 
-Los productos y pedidos de esta demo son ficticios y se guardan solo durante la sesión del navegador. No envía emails ni recibe pagos.
+## Cómo imaginamos Go Store
 
-## Ejecutar la demo
+- Un recorrido guiado para crear y publicar una tienda.
+- Edición sencilla de la marca, el logo, los colores, la portada y la información del negocio.
+- Gestión de productos o servicios, categorías, precios, fotos y disponibilidad.
+- Una tienda pública con una presentación ordenada y adaptable a teléfonos y computadoras.
+- Un panel simple para atender y gestionar pedidos.
+- Plantillas que den un buen punto de partida y permitan personalizar sin programar.
+
+## Estado del proyecto
+
+Go Store está en una etapa inicial. Este repositorio conserva **Grano Vivo** como prototipo visual de una tienda de ejemplo. El creador de tiendas todavía es el siguiente hito; el prototipo actual no tiene registro real, pedidos persistentes ni pagos conectados.
+
+## Probar la tienda de ejemplo
 
 Sirve `examples/grano-vivo-demo/` con cualquier servidor estático. Por ejemplo, con Python:
 
@@ -26,21 +35,16 @@ python -m http.server 8000 --directory examples/grano-vivo-demo
 
 Luego abre `http://localhost:8000`.
 
-## Próximos hitos
+Los productos y pedidos son ficticios y se guardan solo durante la sesión del navegador. La demo no envía emails ni recibe pagos.
 
-1. Prototipo navegable de registro por email y creación de una tienda.
-2. Editor sencillo de marca y catálogo con vista previa en vivo.
-3. Autenticación real y guardado persistente de tiendas y productos.
-4. Publicación de tiendas y gestión real de pedidos.
-5. Pagos y notificaciones como integraciones optativas.
+## Próximos pasos
 
-## Principios
-
-- Código abierto y despliegue documentado.
-- Personalización sin código, con plantillas y bloques acotados.
-- Una sola aplicación para muchas tiendas, con aislamiento de datos por comercio.
-- La tienda ejemplo Grano Vivo sirve como plantilla inicial, no define la marca de Go Store.
+1. Crear el recorrido de registro por email y puesta en marcha de una tienda.
+2. Construir el editor guiado de marca y catálogo con vista previa.
+3. Añadir inicio de sesión y guardado persistente de la información de cada negocio.
+4. Publicar tiendas y habilitar la gestión real de pedidos.
+5. Incorporar pagos y notificaciones como integraciones optativas.
 
 ## Licencia
 
-Este proyecto se distribuye bajo Apache License 2.0. Consulta [`LICENSE`](LICENSE).
+Go Store se distribuye bajo la licencia Apache 2.0. Consulta [`LICENSE`](LICENSE).
