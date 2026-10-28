@@ -48,3 +48,34 @@ function editProduct(id){let p=id?products.find(x=>x.id===id):null;modal(`<div c
 function go(page){location.hash=page==="admin"?"admin":"tienda";}function route(){const hash=location.hash,isAdmin=hash==="#admin";$("#storeView").classList.toggle("hidden",isAdmin);$("#adminView").classList.toggle("hidden",!isAdmin);$("#siteHeader").classList.toggle("hidden",isAdmin);$(".site-footer").classList.toggle("hidden",isAdmin);if(isAdmin){renderAdmin();window.scrollTo(0,0);return;}if(hash==="#tienda"||hash===""){menuFocused=false;featuredExpanded=true;applyMenuFocus();window.scrollTo(0,0);}else if(hash==="#menu"){menuFocused=true;featuredExpanded=false;applyMenuFocus();}}
 function bind(){ $$('[data-route]').forEach(b=>b.onclick=()=>go(b.dataset.route));$$('[data-admin-tab]').forEach(b=>b.onclick=()=>{adminTab=b.dataset.adminTab;renderAdmin();});$("#cartTrigger").onclick=()=>drawer(true);$("#closeCart").onclick=()=>drawer(false);$("#drawerBackdrop").onclick=()=>drawer(false);$("#menuSearch").oninput=e=>{menuQuery=e.target.value;renderProducts();};$("#filterToggle").onclick=()=>{favorites=!favorites;$("#filterToggle").classList.toggle("selected",favorites);renderProducts();};$("#clearFilters").onclick=()=>{category="Todos";favorites=false;menuQuery="";$("#menuSearch").value="";$("#filterToggle").classList.remove("selected");renderCats();renderProducts();};$("[data-featured-order]").onclick=()=>productModal("granola-casa");$("#mobileMenu").onclick=()=>$(".header-nav").classList.toggle("mobile-open");$$('.header-nav a').forEach(a=>a.onclick=e=>{if(a.getAttribute("href")==="#menu"){e.preventDefault();showMenu();}$(".header-nav").classList.remove("mobile-open");});$$('a[href="#menu"]').filter(a=>!a.closest(".header-nav")).forEach(a=>a.onclick=e=>{e.preventDefault();showMenu();});$("#featuredToggle").onclick=()=>{featuredExpanded=!featuredExpanded;applyMenuFocus();};window.addEventListener("hashchange",route);document.addEventListener("keydown",e=>{if(e.key==="Escape"){drawer(false);closeModal();}});}
 if(location.hash==="#menu"){menuFocused=true;featuredExpanded=false;}renderCats();renderProducts();drawCart();bind();route();
+
+// The creator reuses this storefront as its live, same-origin template preview.
+if(new URLSearchParams(location.search).has("creatorPreview")){
+  document.body.classList.add("creator-preview");
+  window.addEventListener("message",event=>{
+    if(event.source!==window.parent||event.data?.type!=="go-store-preview"||(location.origin!=="null"&&event.origin!==location.origin))return;
+    const store=event.data.store||{},root=document.documentElement;
+    const palette=store.palette||{};
+    for(const [key,value] of Object.entries(palette))root.style.setProperty(`--${key}`,value);
+    let previewTheme=document.getElementById("creator-preview-theme");
+    if(!previewTheme){previewTheme=document.createElement("style");previewTheme.id="creator-preview-theme";document.head.append(previewTheme);}
+    previewTheme.textContent=`.brand-mark,.button.dark,.quick-add,.category-chip.active,.cart-trigger>b,.featured-doodle,.admin-button{background:var(--green)!important}.hero h1 em,.section-heading h2 em,.featured-copy h3 em,.about-copy h2 em,.eyebrow,.header-nav a:hover{color:var(--green)!important}.button.dark:hover{background:var(--green2)!important}.demo-ribbon{background:var(--yellow)!important;color:var(--ink)!important}`;
+    document.querySelectorAll(".brand-copy strong").forEach(el=>el.textContent=store.name||"Tu tienda");
+    document.querySelectorAll(".brand-copy small").forEach(el=>el.textContent=store.tagline||"HECHO PARA VOS");
+    document.querySelectorAll(".brand-mark").forEach(el=>{
+      if(store.logo){el.innerHTML=`<img src="${esc(store.logo)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;}
+      else el.textContent=(store.logoText||store.name||"T").slice(0,3).toUpperCase();
+    });
+    const heroTitle=document.querySelector(".hero h1");if(heroTitle)heroTitle.textContent=store.slogan||"Tu tienda, hecha a tu manera.";
+    const heroDescription=document.querySelector(".hero-copy>p");if(heroDescription)heroDescription.textContent=store.description||"Una selección pensada para vos. Descubrí lo que hacemos y elegí tus favoritos.";
+    const ribbon=document.querySelector(".demo-ribbon");if(ribbon)ribbon.textContent="VISTA PREVIA · Así podría verse tu tienda";
+    const menuTitle=document.querySelector(".section-heading h2");if(menuTitle)menuTitle.innerHTML=`${esc(store.menuTitle||"Conocé nuestros productos")} <em>favoritos</em>`;
+    const previewProducts=(store.products||[]).filter(p=>p.name).slice(0,12);
+    {
+      const images=["assets/granola-pack.webp","assets/yogurt-jar-pack.webp","assets/nuts-pack.webp","assets/chocolate-pack.webp","assets/combo-pack.webp"];
+      products=previewProducts.map((p,index)=>({id:`creator-${index}`,name:p.name,category:p.category||"Productos",price:Number(p.price)||0,description:p.description||"Hecho con dedicación para vos.",image:images[index%images.length],tag:index===0?"Favorito":"Hecho con cariño",available:true,extra:false}));
+      const categories=[...new Set(products.map(p=>p.category))];cats.splice(0,cats.length,"Todos",...categories);category="Todos";renderCats();renderProducts();
+    }
+    document.title=`${store.name||"Tu tienda"} — Vista previa`;
+  });
+}

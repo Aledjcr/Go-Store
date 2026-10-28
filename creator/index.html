@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f0">
+  <meta name="description" content="Crea y personaliza una tienda con Go Store.">
+  <title>Creador de tiendas · Go Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="go-brand" href="../README.md" aria-label="Go Store"><span class="go-mark">g</span><span><strong>Go Store</strong><small>CREÁ TU TIENDA</small></span></a>
+    <div class="save-state"><span class="save-dot"></span><span id="saveState">Borrador guardado en este navegador</span></div>
+    <a class="exit-link" href="../examples/grano-vivo-demo/index.html">Ver ejemplo ↗</a>
+  </header>
+  <main class="creator-shell">
+    <section class="intro-row"><div><p class="eyebrow">UN BUEN COMIENZO, PASO A PASO</p><h1>Tu tienda empieza <em>acá.</em></h1><p class="intro-copy">Contanos qué vendés. Te ayudamos a darle forma y ver cómo se va a sentir tu tienda.</p></div><span class="progress-note" id="progressNote">Paso 1 de 4</span></section>
+    <nav class="stepper" aria-label="Pasos para crear tu tienda" id="stepper"></nav>
+    <div class="creator-grid">
+      <section class="editor-card" aria-live="polite"><div id="stepContent"></div><div class="editor-footer"><button class="text-button" id="backButton">← Volver</button><span class="autosave-note">Tus cambios se guardan automáticamente</span><button class="primary-button" id="nextButton">Continuar <span>→</span></button></div></section>
+      <aside class="preview-card"><div class="preview-head"><div><span class="preview-kicker">VISTA PREVIA EN VIVO</span><strong id="previewName">Tu tienda</strong></div><div class="device-switch" role="group" aria-label="Tamaño de vista previa"><button class="active" data-device="desktop" aria-label="Vista de escritorio">▱</button><button data-device="mobile" aria-label="Vista de teléfono">▯</button></div></div><div class="preview-window" id="previewWindow"><iframe id="storePreview" src="../examples/grano-vivo-demo/index.html?creatorPreview=1" title="Vista previa de la tienda"></iframe></div><div class="preview-foot"><span>Una misma base flexible para cada negocio</span><span>✦</span></div></aside>
+    </div>
+    <p class="prototype-note"><strong>Prototipo del creador</strong> · Este borrador se guarda en este navegador. El registro, la publicación y los pedidos conectados se incorporarán en próximas etapas.</p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
