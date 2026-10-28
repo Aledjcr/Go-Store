@@ -23,27 +23,7 @@ Go Store está pensada para quienes recién comienzan: **crear y editar una tien
 
 ## Estado del proyecto
 
-Go Store está en una etapa inicial. Este repositorio conserva **Grano Vivo** como prototipo visual de una tienda de ejemplo. El creador de tiendas todavía es el siguiente hito; el prototipo actual no tiene registro real, pedidos persistentes ni pagos conectados.
-
-## Probar la tienda de ejemplo
-
-Sirve `examples/grano-vivo-demo/` con cualquier servidor estático. Por ejemplo, con Python:
-
-```bash
-python -m http.server 8000 --directory examples/grano-vivo-demo
-```
-
-Luego abre `http://localhost:8000`.
-
-Los productos y pedidos son ficticios y se guardan solo durante la sesión del navegador. La demo no envía emails ni recibe pagos.
-
-## Próximos pasos
-
-1. Crear el recorrido de registro por email y puesta en marcha de una tienda.
-2. Construir el editor guiado de marca y catálogo con vista previa.
-3. Añadir inicio de sesión y guardado persistente de la información de cada negocio.
-4. Publicar tiendas y habilitar la gestión real de pedidos.
-5. Incorporar pagos y notificaciones como integraciones optativas.
+Go Store está en una etapa inicial. El creador de tiendas es el siguiente hito; el prototipo actual no tiene registro real, pedidos persistentes ni pagos conectados.
 
 ## Licencia
 
