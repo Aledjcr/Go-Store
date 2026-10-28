@@ -12,7 +12,7 @@ Con una guía paso a paso, cada emprendedor podrá personalizar su tienda, orden
 
 Go Store está pensada para quienes recién comienzan: **crear y editar una tienda no tendrá costo**. El proyecto es de código abierto y busca que más emprendimientos puedan tener una presencia web profesional desde el inicio.
 
-## Cómo imaginamos Go Store
+## Cómo imagino Go Store
 
 - Un recorrido guiado para crear y publicar una tienda.
 - Edición sencilla de la marca, el logo, los colores, la portada y la información del negocio.
