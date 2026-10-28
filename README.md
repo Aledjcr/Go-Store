@@ -2,7 +2,7 @@
 
 **Una forma sencilla y gratuita de llevar un emprendimiento a la web.**
 
-## Visión
+## Visión.
 
 Muchos emprendimientos ofrecen sus productos o servicios de manera informal a través de canales como WhatsApp o Telegram, sin una página web ordenada que presente su propuesta. Esto puede reducir su visibilidad, dificultar que nuevos clientes encuentren lo que ofrecen y hacer que se pierdan oportunidades de venta.
 
