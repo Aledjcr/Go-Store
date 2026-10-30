@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f0">
+  <meta name="description" content="Conocé el catálogo de esta tienda creada con Go Store.">
+  <title>Tienda · Go Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="#top" aria-label="Inicio"><span class="brand-mark" id="brandMark">g</span><span><strong id="storeName">Go Store</strong><small id="storeTagline">CATÁLOGO DIGITAL</small></span></a><a class="header-link" href="#catalog">Ver catálogo <span>↓</span></a></header>
+  <main id="top">
+    <div id="pageState" class="page-state" role="status">Cargando tienda…</div>
+    <div id="storeContent" class="hidden">
+      <section class="hero wrap">
+        <div class="hero-copy"><p class="eyebrow">CATÁLOGO DE <span id="heroName"></span></p><h1 id="welcomeTitle"></h1><p id="storeDescription" class="hero-description"></p><a class="primary-link" href="#catalog">Explorar productos <span>↓</span></a></div>
+        <div class="hero-aside"><span class="hero-decoration" aria-hidden="true">✳</span><p>Una tienda independiente<br>hecha con <strong>Go Store</strong></p></div>
+      </section>
+      <section id="catalog" class="catalog-section">
+        <div class="wrap">
+          <div class="section-heading"><div><p class="eyebrow">HECHO PARA VOS</p><h2 id="menuTitle">Nuestro catálogo</h2></div><label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="Buscar un producto" aria-label="Buscar un producto"></label></div>
+          <nav id="categoryNav" class="category-nav" aria-label="Categorías del catálogo"></nav>
+          <div id="catalogState" class="catalog-state hidden"></div>
+          <div id="productList" class="product-list"></div>
+          <p class="catalog-note">Catálogo informativo · Los pedidos online se habilitarán en una próxima etapa.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="wrap"><a class="brand footer-brand" href="#top"><span class="brand-mark" id="footerMark">g</span><span><strong id="footerName">Go Store</strong><small>TIENDA INDEPENDIENTE</small></span></a><a href="#top" class="back-top">Volver arriba ↑</a></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../creator/supabase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
