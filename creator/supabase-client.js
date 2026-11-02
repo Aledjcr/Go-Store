@@ -177,6 +177,35 @@
     return data;
   }
 
+  async function getStoreOrders(storeId) {
+    if (!client) throw new Error("Falta configurar Supabase.");
+    const { data: orders, error } = await client.from("orders")
+      .select("id,store_id,reference,status,customer_name,customer_phone,fulfillment_method,delivery_address,customer_note,currency,subtotal,created_at")
+      .eq("store_id", storeId).order("created_at", { ascending: false }).limit(100);
+    if (error) throw error;
+    if (!orders.length) return [];
+    const { data: items, error: itemsError } = await client.from("order_items")
+      .select("order_id,product_name,quantity,unit_price,line_total")
+      .eq("store_id", storeId).in("order_id", orders.map(order => order.id));
+    if (itemsError) throw itemsError;
+    const itemsByOrder = new Map();
+    for (const item of items) {
+      if (!itemsByOrder.has(item.order_id)) itemsByOrder.set(item.order_id, []);
+      itemsByOrder.get(item.order_id).push(item);
+    }
+    return orders.map(order => ({ ...order, items: itemsByOrder.get(order.id) || [] }));
+  }
+
+  async function updateOrderStatus(orderId, status) {
+    if (!client) throw new Error("Falta configurar Supabase.");
+    const allowed = ["received", "accepted", "preparing", "ready", "completed", "cancelled"];
+    if (!allowed.includes(status)) throw new Error("Estado de pedido no válido.");
+    const { data, error } = await client.from("orders").update({ status })
+      .eq("id", orderId).select("id,status").single();
+    if (error) throw error;
+    return data;
+  }
+
   async function loadStore(storeId) {
     if (!client) throw new Error("Falta configurar Supabase.");
     const { data: store, error: storeError } = await client
@@ -201,7 +230,7 @@
     if (store.logo_path) {
       logo = client.storage.from("store-assets").getPublicUrl(store.logo_path).data.publicUrl;
     }
-    const templateColor = templates[store.template_key]?.palette?.green;
+    const templateColor = ({ huerta: "#536a43", costa: "#24445a", barro: "#975d43" })[store.template_key];
     return {
       remoteStoreId: store.id,
       slug: store.slug,
@@ -243,6 +272,8 @@
     sendSignInLink,
     saveStore,
     publishStore,
+    getStoreOrders,
+    updateOrderStatus,
     getAccount,
     listMyStores,
     loadStore,

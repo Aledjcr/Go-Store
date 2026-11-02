@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header"><a class="brand" href="#top" aria-label="Inicio"><span class="brand-mark" id="brandMark">g</span><span><strong id="storeName">Go Store</strong><small id="storeTagline">CATÁLOGO DIGITAL</small></span></a><a class="header-link" href="#catalog">Ver catálogo <span>↓</span></a></header>
+  <header class="site-header"><a class="brand" href="#top" aria-label="Inicio"><span class="brand-mark" id="brandMark">g</span><span><strong id="storeName">Go Store</strong><small id="storeTagline">CATÁLOGO DIGITAL</small></span></a><div class="header-actions"><a class="header-link" href="#catalog">Ver catálogo <span>↓</span></a><button class="cart-trigger" id="cartTrigger" type="button" aria-haspopup="dialog">Mi pedido <span id="cartCount">0</span></button></div></header>
   <main id="top">
     <div id="pageState" class="page-state" role="status">Cargando tienda…</div>
     <div id="storeContent" class="hidden">
@@ -26,12 +26,30 @@
           <nav id="categoryNav" class="category-nav" aria-label="Categorías del catálogo"></nav>
           <div id="catalogState" class="catalog-state hidden"></div>
           <div id="productList" class="product-list"></div>
-          <p class="catalog-note">Catálogo informativo · Los pedidos online se habilitarán en una próxima etapa.</p>
+          <p class="catalog-note">Elegí tus productos y enviá tu pedido a esta tienda.</p>
         </div>
       </section>
     </div>
   </main>
   <footer class="site-footer"><div class="wrap"><a class="brand footer-brand" href="#top"><span class="brand-mark" id="footerMark">g</span><span><strong id="footerName">Go Store</strong><small>TIENDA INDEPENDIENTE</small></span></a><a href="#top" class="back-top">Volver arriba ↑</a></div></footer>
+  <dialog id="cartDialog" class="cart-dialog" aria-labelledby="cartTitle">
+    <div class="cart-dialog-head"><div><p class="eyebrow">TU COMPRA</p><h2 id="cartTitle">Armá tu pedido</h2></div><button id="closeCart" class="close-cart" type="button" aria-label="Cerrar">×</button></div>
+    <form id="checkoutForm">
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-total"><span>Total</span><strong id="cartTotal"></strong></div>
+      <div class="checkout-fields">
+        <label>Tu nombre<input name="customerName" required maxlength="100" autocomplete="name" placeholder="Nombre y apellido"></label>
+        <label>Teléfono<input name="customerPhone" required maxlength="30" minlength="6" type="tel" inputmode="tel" autocomplete="tel" placeholder="Código de área y número"></label>
+        <fieldset><legend>¿Cómo recibís tu pedido?</legend><label class="radio-option"><input type="radio" name="fulfillment" value="pickup" checked> Retiro por el local</label><label class="radio-option"><input type="radio" name="fulfillment" value="delivery"> Delivery</label></fieldset>
+        <label id="addressField" class="hidden">Dirección de entrega<input name="deliveryAddress" maxlength="300" autocomplete="street-address" placeholder="Calle, número, localidad"></label>
+        <label>Nota para la tienda <span>(opcional)</span><textarea name="customerNote" maxlength="500" rows="2" placeholder="Algún detalle para preparar tu pedido"></textarea></label>
+      </div>
+      <p id="checkoutMessage" class="checkout-message hidden" role="alert"></p>
+      <button class="checkout-submit" id="submitOrder" type="submit">Enviar pedido</button>
+      <p class="checkout-terms">El pago y la entrega se coordinan directamente con la tienda.</p>
+    </form>
+    <section id="orderSuccess" class="order-success hidden" role="status"><span>✓</span><h3>¡Pedido enviado!</h3><p id="successText"></p><button type="button" class="checkout-submit" id="finishOrder">Volver al catálogo</button></section>
+  </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../creator/supabase-config.js"></script>
   <script src="app.js"></script>
