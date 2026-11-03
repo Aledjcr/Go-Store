@@ -28,7 +28,7 @@
           full_name: state.ownerName.trim(),
           phone: state.ownerPhone.trim() || null
         },
-        emailRedirectTo: `${location.origin}${location.pathname}`
+        emailRedirectTo: new URL("index.html", location.href).toString()
       }
     });
     if (error) throw error;

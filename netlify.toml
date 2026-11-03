@@ -1,0 +1,3 @@
+[build]
+  command = "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp -R creator storefront admin examples dist/ && if [ -d docs ]; then cp -R docs dist/docs; fi"
+  publish = "dist"

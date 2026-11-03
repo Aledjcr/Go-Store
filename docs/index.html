@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f5ef">
+  <meta name="description" content="Documentación inicial de Go Store: visión, uso, arquitectura y despliegue.">
+  <title>Documentación · Go Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <header class="mobile-header">
+    <a class="brand" href="#inicio"><span class="mark">g</span><span><b>Go Store</b><small>DOCUMENTACIÓN</small></span></a>
+    <button id="menuToggle" aria-expanded="false" aria-controls="sidebar">Índice <span aria-hidden="true">☰</span></button>
+  </header>
+  <aside class="sidebar" id="sidebar">
+    <a class="brand sidebar-brand" href="#inicio"><span class="mark">g</span><span><b>Go Store</b><small>DOCUMENTACIÓN</small></span></a>
+    <p class="caption">GUÍA DEL PROYECTO</p>
+    <nav aria-label="Índice de documentación">
+      <a class="nav-link active" href="#inicio">Presentación</a>
+      <a class="nav-link" href="#vision">Visión</a>
+      <a class="nav-link" href="#estado">Qué funciona hoy</a>
+      <a class="nav-link" href="#recorrido">Recorrido de una tienda</a>
+      <span class="nav-group">PONERLO EN MARCHA</span>
+      <a class="nav-link" href="#local">Desarrollo local</a>
+      <a class="nav-link" href="#supabase">Supabase</a>
+      <a class="nav-link" href="#netlify">Netlify</a>
+      <span class="nav-group">CÓMO ESTÁ ARMADO</span>
+      <a class="nav-link" href="#arquitectura">Arquitectura y privacidad</a>
+      <a class="nav-link" href="#alcance">Alcance actual</a>
+      <a class="nav-link" href="#propia">Instancia propia</a>
+    </nav>
+    <div class="sidebar-foot"><i></i><span>Documentación inicial</span><small>Go Store · Apache 2.0</small></div>
+  </aside>
+  <main class="content" id="contenido">
+    <section id="inicio" class="hero">
+      <p class="eyebrow">UNA GUÍA PARA ENTENDER Y EMPEZAR</p>
+      <h1>Una tienda propia,<br><em>sin empezar desde cero.</em></h1>
+      <p class="lead">Go Store es un proyecto abierto para que un emprendimiento pueda ordenar su presencia en internet y empezar a recibir pedidos sin construir una web desde cero.</p>
+      <div class="hero-actions"><a class="button" href="#local">Ponerlo en marcha <span>↓</span></a><a href="../">Volver a Go Store ↗</a></div>
+      <div class="facts"><div><b>Apache 2.0</b><small>Licencia libre</small></div><div><b>HTML, CSS y JS</b><small>Sin compilación</small></div><div><b>Supabase</b><small>Datos y acceso</small></div></div>
+    </section>
+    <section id="vision" class="doc-section">
+      <p class="eyebrow">01 · VISIÓN</p><h2>Que vender por internet sea más fácil de empezar.</h2>
+      <p>Muchos emprendimientos muestran lo que ofrecen por WhatsApp o Telegram, pero no cuentan con una web ordenada que ayude a nuevos clientes a encontrar sus productos y realizar un pedido.</p>
+      <p>Go Store busca cubrir esa necesidad con un creador guiado, una tienda adaptable a teléfonos y computadoras y un panel sencillo para gestionar pedidos, sin exigir conocimientos de programación ni infraestructura.</p>
+      <aside class="callout"><b>La prioridad del proyecto</b><span>Una experiencia clara y fácil de editar para quienes están empezando. El código es abierto y crear una tienda está pensado para ser gratuito.</span></aside>
+    </section>
+    <section id="estado" class="doc-section">
+      <p class="eyebrow">02 · ESTADO ACTUAL</p><h2>Un piloto funcional en construcción.</h2>
+      <p>El recorrido implementado permite guardar y publicar una tienda, mostrar su catálogo y recibir pedidos básicos. El despliegue público todavía no está verificado.</p>
+      <div class="cards">
+        <article><small>01</small><h3>Creador</h3><p>Datos de contacto de quien emprende, marca, colores, plantilla, logo y catálogo en pasos guiados.</p></article>
+        <article><small>02</small><h3>Tienda pública</h3><p>Productos, búsqueda, categorías, carrito y envío de pedidos.</p></article>
+        <article><small>03</small><h3>Panel del negocio</h3><p>Consulta pedidos y actualiza su estado con la cuenta dueña.</p></article>
+        <article><small>04</small><h3>Cuenta</h3><p>Acceso por enlace de correo y una tienda por cuenta.</p></article>
+      </div>
+    </section>
+    <section id="recorrido" class="doc-section"><p class="eyebrow">03 · RECORRIDO</p><h2>De la configuración a un pedido.</h2>
+      <ol><li><b>Crear una cuenta.</b> Se indica nombre, correo y teléfono de contacto; el acceso se confirma desde un enlace de correo.</li><li><b>Personalizar.</b> Se completa la información del negocio, se elige una apariencia y se carga el catálogo.</li><li><b>Guardar y publicar.</b> El borrador queda privado; al publicarlo, la marca y el catálogo se hacen visibles.</li><li><b>Hacer un pedido.</b> El cliente agrega productos, elige retiro o delivery e indica sus datos.</li><li><b>Gestionar.</b> El dueño consulta el pedido y cambia su estado desde el panel.</li></ol>
+    </section>
+    <section id="local" class="doc-section"><p class="eyebrow">04 · DESARROLLO LOCAL</p><h2>Levantar la web en tu computadora.</h2>
+      <p>El proyecto es estático y no necesita compilación. Servilo por HTTP para que funcionen el acceso por correo y las rutas; no abras los archivos como <code>file://</code>.</p>
+      <label class="code-label">PowerShell · desde la raíz del repositorio</label><pre><code>py -m http.server 8000</code></pre>
+      <p>Luego abrí <a href="http://localhost:8000/creator/">el creador local</a>. La tienda pública usa <code>/storefront/?slug=identificador</code> y el panel está en <code>/admin/orders/</code>.</p>
+      <aside class="callout note"><b>Requisitos</b><span>Python para servir los archivos y la CLI de Supabase para aplicar migraciones. Docker no hace falta para usar el proyecto hospedado.</span></aside>
+    </section>
+    <section id="supabase" class="doc-section"><p class="eyebrow">05 · SUPABASE</p><h2>Acceso, base de datos y pedidos.</h2>
+      <p>Supabase mantiene usuarios, perfiles, tiendas, productos y pedidos. El frontend lee la URL y la clave publicable desde <code>creator/supabase-config.js</code>. Para configurar otra instancia, copiá el Project URL y la clave publishable (o anon, en proyectos que aún usan las claves anteriores) desde el panel de Supabase y reemplazá los valores de ese archivo. La clave publicable puede estar en el navegador; nunca pongas una clave secreta o <code>service_role</code> en el frontend.</p>
+      <h3>Aplicar migraciones</h3><p>Los archivos SQL están en <code>supabase/migrations/</code>. Con la CLI vinculada a la instancia:</p>
+      <pre><code>supabase migration list --linked
+supabase db push --linked
+supabase migration list --linked</code></pre>
+      <p><code>db push</code> aplica migraciones pendientes. No uses <code>supabase db reset --linked</code> en la instancia con datos: reconstruye la base remota.</p>
+      <p>El pedido se crea mediante una función de Postgres que vuelve a validar tienda, disponibilidad y precios. Las políticas RLS limitan la lectura de pedidos al dueño.</p>
+    </section>
+    <section id="netlify" class="doc-section"><p class="eyebrow">06 · NETLIFY</p><h2>Publicar los archivos web.</h2>
+      <p>Netlify puede alojar las páginas estáticas; Supabase continúa siendo el backend. El archivo <code>netlify.toml</code> define estos valores:</p>
+      <div class="settings"><div><span>Base directory</span><b>raíz del repositorio</b></div><div><span>Build command</span><b>prepara <code>dist/</code> copiando las páginas</b></div><div><span>Publish directory</span><b><code>dist</code></b></div></div>
+      <p>La configuración del repositorio construye <code>dist/</code> con la portada, el creador, la tienda pública, el panel de pedidos, ejemplos y esta documentación. Las rutas publicadas incluyen <code>/creator/</code>, <code>/storefront/?slug=...</code>, <code>/admin/orders/</code> y <code>/docs/</code>. Con GitHub conectado, Netlify puede desplegar cada push.</p>
+      <aside class="callout caution"><b>Despliegue pendiente de verificar</b><span>Netlify aún no se probó con una publicación real. En Supabase configurá el Site URL de Netlify y el redirect permitido <code>https://TU-SITIO.netlify.app/creator/index.html</code>. Después del primer despliegue, confirmá que las rutas de la tienda y el panel cargan correctamente.</span></aside>
+    </section>
+    <section id="arquitectura" class="doc-section"><p class="eyebrow">07 · ARQUITECTURA Y PRIVACIDAD</p><h2>Archivos estáticos y datos aislados por tienda.</h2>
+      <div class="file-map"><div><code>creator/</code><span>Editor, acceso, borradores y publicación.</span></div><div><code>storefront/</code><span>Catálogo, carrito y envío del pedido.</span></div><div><code>admin/orders/</code><span>Consulta de pedidos y cambios de estado.</span></div><div><code>supabase/</code><span>Esquema SQL, migraciones y políticas RLS.</span></div><div><code>docs/</code><span>Guía breve para usar y desplegar el proyecto.</span></div></div>
+      <p>Una instancia de Go Store comparte una base de Supabase entre tiendas. El público consulta catálogos publicados; cada cuenta gestiona su propia tienda y sus pedidos.</p>
+    </section>
+    <section id="alcance" class="doc-section"><p class="eyebrow">08 · ALCANCE DEL PILOTO</p><h2>Lo que todavía no incluye.</h2>
+      <ul><li>Pagos online ni confirmaciones automáticas por WhatsApp o correo.</li><li>Zonas o tarifas de entrega configurables; pago y entrega se coordinan directamente.</li><li>Dominio personalizado por tienda o onboarding público.</li><li>Despliegue comprobado en Netlify ni guía completa de instalación propia.</li></ul>
+      <p>Publicar una tienda en Supabase hace visibles los datos seleccionados; el hosting web es un paso separado.</p>
+    </section>
+    <section id="propia" class="doc-section last"><p class="eyebrow">09 · INSTANCIA PROPIA</p><h2>La guía de self-hosting se completará después.</h2>
+      <p>El repositorio incluye migraciones para configurar una instancia propia de Supabase y publicar la web. La receta detallada se escribirá cuando el despliegue de referencia esté verificado y se pueda repetir desde cero.</p>
+      <p>Go Store se distribuye bajo la licencia Apache 2.0.</p>
+    </section>
+    <footer class="footer"><span>Go Store · Documentación inicial</span><a href="#inicio">Volver arriba ↑</a></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
