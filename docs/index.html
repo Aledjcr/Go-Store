@@ -54,19 +54,19 @@
       <p class="eyebrow">02 · ESTADO ACTUAL</p><h2>Un piloto funcional en construcción.</h2>
       <p>El recorrido implementado permite guardar y publicar una tienda, mostrar su catálogo y recibir pedidos básicos. El despliegue público todavía no está verificado.</p>
       <div class="cards">
-        <article><small>01</small><h3>Creador</h3><p>Datos de contacto de quien emprende, marca, colores, plantilla, logo y catálogo en pasos guiados.</p></article>
+        <article><small>01</small><h3>Creador</h3><p>Alta inicial con datos del emprendimiento, plantilla y primeros productos.</p></article>
         <article><small>02</small><h3>Tienda pública</h3><p>Productos, búsqueda, categorías, carrito y envío de pedidos.</p></article>
-        <article><small>03</small><h3>Panel del negocio</h3><p>Consulta pedidos y actualiza su estado con la cuenta dueña.</p></article>
-        <article><small>04</small><h3>Cuenta</h3><p>Acceso por enlace de correo y una tienda por cuenta.</p></article>
+        <article><small>03</small><h3>Panel del negocio</h3><p>Editor independiente para actualizar marca, diseño, productos, precios y disponibilidad; también permite gestionar pedidos.</p></article>
+        <article><small>04</small><h3>Cuenta</h3><p>Inicio con Google o contraseña; la primera alta verifica el correo. Una tienda por cuenta.</p></article>
       </div>
     </section>
     <section id="recorrido" class="doc-section"><p class="eyebrow">03 · RECORRIDO</p><h2>De la configuración a un pedido.</h2>
-      <ol><li><b>Crear una cuenta.</b> Se indica nombre, correo y teléfono de contacto; el acceso se confirma desde un enlace de correo.</li><li><b>Personalizar.</b> Se completa la información del negocio, se elige una apariencia y se carga el catálogo.</li><li><b>Guardar y publicar.</b> El borrador queda privado; al publicarlo, la marca y el catálogo se hacen visibles.</li><li><b>Hacer un pedido.</b> El cliente agrega productos, elige retiro o delivery e indica sus datos.</li><li><b>Gestionar.</b> El dueño consulta el pedido y cambia su estado desde el panel.</li></ol>
+      <ol><li><b>Crear una cuenta.</b> Se indica nombre, correo y teléfono; el primer acceso confirma el correo. Después se puede entrar con Google o contraseña.</li><li><b>Completar la tienda.</b> El creador guía la primera configuración del negocio, la plantilla y los productos iniciales.</li><li><b>Administrar.</b> El panel permite editar la identidad y apariencia de la tienda, gestionar productos, precios y disponibilidad desde una barra lateral.</li><li><b>Publicar y recibir pedidos.</b> La tienda se publica para clientes; el dueño consulta el pedido y cambia su estado desde la sección Pedidos.</li></ol>
     </section>
     <section id="local" class="doc-section"><p class="eyebrow">04 · DESARROLLO LOCAL</p><h2>Levantar la web en tu computadora.</h2>
       <p>El proyecto es estático y no necesita compilación. Servilo por HTTP para que funcionen el acceso por correo y las rutas; no abras los archivos como <code>file://</code>.</p>
       <label class="code-label">PowerShell · desde la raíz del repositorio</label><pre><code>py -m http.server 8000</code></pre>
-      <p>Luego abrí <a href="http://localhost:8000/creator/">el creador local</a>. La tienda pública usa <code>/storefront/?slug=identificador</code> y el panel está en <code>/admin/orders/</code>.</p>
+      <p>Luego abrí <a href="http://localhost:8000/creator/">el creador local</a>. La tienda pública usa <code>/storefront/?slug=identificador</code>; el panel para productos está en <code>/admin/</code> y los pedidos en <code>/admin/orders/</code>.</p>
       <aside class="callout note"><b>Requisitos</b><span>Python para servir los archivos y la CLI de Supabase para aplicar migraciones. Docker no hace falta para usar el proyecto hospedado.</span></aside>
     </section>
     <section id="supabase" class="doc-section"><p class="eyebrow">05 · SUPABASE</p><h2>Acceso, base de datos y pedidos.</h2>
@@ -81,11 +81,11 @@ supabase migration list --linked</code></pre>
     <section id="netlify" class="doc-section"><p class="eyebrow">06 · NETLIFY</p><h2>Publicar los archivos web.</h2>
       <p>Netlify puede alojar las páginas estáticas; Supabase continúa siendo el backend. El archivo <code>netlify.toml</code> define estos valores:</p>
       <div class="settings"><div><span>Base directory</span><b>raíz del repositorio</b></div><div><span>Build command</span><b>prepara <code>dist/</code> copiando las páginas</b></div><div><span>Publish directory</span><b><code>dist</code></b></div></div>
-      <p>La configuración del repositorio construye <code>dist/</code> con la portada, el creador, la tienda pública, el panel de pedidos, ejemplos y esta documentación. Las rutas publicadas incluyen <code>/creator/</code>, <code>/storefront/?slug=...</code>, <code>/admin/orders/</code> y <code>/docs/</code>. Con GitHub conectado, Netlify puede desplegar cada push.</p>
-      <aside class="callout caution"><b>Despliegue pendiente de verificar</b><span>Netlify aún no se probó con una publicación real. En Supabase configurá el Site URL de Netlify y el redirect permitido <code>https://TU-SITIO.netlify.app/creator/index.html</code>. Después del primer despliegue, confirmá que las rutas de la tienda y el panel cargan correctamente.</span></aside>
+      <p>La configuración del repositorio construye <code>dist/</code> con la portada, el creador, la tienda pública, el panel del negocio, ejemplos y esta documentación. Las rutas publicadas incluyen <code>/creator/</code>, <code>/storefront/?slug=...</code>, <code>/admin/</code>, <code>/admin/orders/</code> y <code>/docs/</code>. Con GitHub conectado, Netlify puede desplegar cada push.</p>
+      <aside class="callout caution"><b>Despliegue pendiente de verificar</b><span>En Supabase configurá el Site URL de Netlify y permití los redirects de <code>/creator/index.html</code> y <code>/admin/**</code> para la verificación inicial y la recuperación de contraseña. El acceso con Google también requiere habilitar el proveedor y configurar sus credenciales en Supabase. Después del despliegue, confirmá las rutas del panel y la tienda.</span></aside>
     </section>
     <section id="arquitectura" class="doc-section"><p class="eyebrow">07 · ARQUITECTURA Y PRIVACIDAD</p><h2>Archivos estáticos y datos aislados por tienda.</h2>
-      <div class="file-map"><div><code>creator/</code><span>Editor, acceso, borradores y publicación.</span></div><div><code>storefront/</code><span>Catálogo, carrito y envío del pedido.</span></div><div><code>admin/orders/</code><span>Consulta de pedidos y cambios de estado.</span></div><div><code>supabase/</code><span>Esquema SQL, migraciones y políticas RLS.</span></div><div><code>docs/</code><span>Guía breve para usar y desplegar el proyecto.</span></div></div>
+      <div class="file-map"><div><code>creator/</code><span>Alta inicial guiada de cada tienda.</span></div><div><code>storefront/</code><span>Catálogo, carrito y envío del pedido.</span></div><div><code>admin/</code><span>Editor autenticado de marca, apariencia y productos.</span></div><div><code>admin/orders/</code><span>Consulta de pedidos y cambios de estado.</span></div><div><code>supabase/</code><span>Esquema SQL, migraciones y políticas RLS.</span></div><div><code>docs/</code><span>Guía breve para usar y desplegar el proyecto.</span></div></div>
       <p>Una instancia de Go Store comparte una base de Supabase entre tiendas. El público consulta catálogos publicados; cada cuenta gestiona su propia tienda y sus pedidos.</p>
     </section>
     <section id="alcance" class="doc-section"><p class="eyebrow">08 · ALCANCE DEL PILOTO</p><h2>Lo que todavía no incluye.</h2>

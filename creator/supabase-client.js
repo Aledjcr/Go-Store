@@ -74,7 +74,7 @@
       ? await client.from("stores").update(storeFields).eq("id", state.remoteStoreId).select("id").single()
       : await client.from("stores").insert(store).select("id").single();
     if (storeResult.error?.code === "23505" && storeResult.error.message.includes("stores_one_store_per_owner_idx")) {
-      throw new Error("Esta cuenta ya tiene una tienda. Abrí Mis tiendas para continuar editándola.");
+      throw new Error("Esta cuenta ya tiene una tienda. Abrí el panel para continuar editándola.");
     }
     if (storeResult.error?.code === "23505") {
       throw new Error("Ese identificador ya está en uso. Elegí otro antes de guardar.");
@@ -111,7 +111,7 @@
       description: product.description.trim() || null,
       price: Number(product.price) || 0,
       currency: "ARS",
-      available: true,
+      available: product.available ?? true,
       sort_order: index
     }));
 
@@ -252,7 +252,8 @@
         name: product.name,
         price: String(product.price),
         category: categoryNames.get(product.category_id) || "",
-        description: product.description || ""
+        description: product.description || "",
+        available: product.available
       })),
       step: 1,
       authPending: false,

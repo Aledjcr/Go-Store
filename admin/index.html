@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f6f0">
+  <meta name="description" content="Administra tu tienda de Go Store.">
+  <title>Panel de tu tienda · Go Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a id="adminHomeLink" href="./" class="brand header-wordmark"><strong>Go Store</strong></a>
+  </header>
+  <main class="shell">
+    <section id="authScreen" class="auth-card">
+      <p class="eyebrow">TU NEGOCIO</p><h1>Ingresá al panel de tu tienda</h1>
+      <p>Usá el correo asociado a tu tienda. Te enviaremos un enlace de acceso.</p>
+      <form id="loginForm"><label for="loginEmail">Correo electrónico</label><input id="loginEmail" type="email" required autocomplete="email" placeholder="nombre@correo.com"><label for="loginPassword">Contraseña</label><input id="loginPassword" type="password" required minlength="8" autocomplete="current-password" placeholder="Al menos 8 caracteres"><button class="primary-button" type="submit">Ingresar <span>→</span></button></form>
+      <div class="auth-options"><button id="forgotPasswordButton" class="text-link" type="button">Crear o recuperar contraseña</button><span>o</span><button id="googleLoginButton" class="google-button" type="button"><span aria-hidden="true">G</span>Continuar con Google</button></div>
+      <p id="authMessage" class="message" role="status"></p>
+    </section>
+    <section id="passwordRecoveryCard" class="auth-card hidden">
+      <p class="eyebrow">SEGURIDAD DE LA CUENTA</p><h1>Elegí una contraseña</h1><p>Usá al menos 8 caracteres para acceder al panel sin volver a tu correo.</p>
+      <form id="passwordRecoveryForm"><label for="newPassword">Nueva contraseña</label><input id="newPassword" type="password" required minlength="8" autocomplete="new-password"><label for="confirmPassword">Confirmar contraseña</label><input id="confirmPassword" type="password" required minlength="8" autocomplete="new-password"><button class="primary-button" type="submit">Guardar contraseña <span>→</span></button></form>
+      <p id="passwordRecoveryMessage" class="message" role="status"></p>
+    </section>
+    <section id="managerPanel" class="hidden" aria-live="polite">
+      <div class="workspace-layout">
+        <aside class="workspace-sidebar" aria-label="Panel de la tienda">
+          <div class="sidebar-store"><span class="sidebar-store-mark">g</span><span><small>MI TIENDA</small><strong id="sidebarStoreName">Tu tienda</strong></span></div>
+          <nav class="workspace-nav" aria-label="Secciones de administración">
+            <a class="workspace-nav-link" href="#orders" data-view-link="orders"><span aria-hidden="true">▤</span>Pedidos</a>
+            <a class="workspace-nav-link active" href="#products" data-view-link="products" aria-current="page"><span aria-hidden="true">▦</span>Productos</a>
+            <a class="workspace-nav-link" href="#store-settings" data-view-link="store"><span aria-hidden="true">✎</span>Editar tienda</a>
+            <a class="workspace-nav-link" href="../docs/"><span aria-hidden="true">◉</span>Documentación</a>
+          </nav>
+          <button id="signOutButton" class="sidebar-signout" type="button">Cerrar sesión</button>
+        </aside>
+        <div class="workspace-content">
+          <section id="productsView" class="workspace-view">
+            <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE TRABAJO</p><h1>Productos</h1><p id="storeMeta" class="muted"></p></div><div class="heading-actions"><a id="publicStoreLink" class="secondary-button hidden" target="_blank" rel="noopener">Ver tienda ↗</a></div></div>
+            <div class="summary-grid"><article class="summary-card"><span>Estado de la tienda</span><strong id="storeStatus">—</strong></article><article class="summary-card"><span>Productos en el catálogo</span><strong id="productCount">0</strong></article></div>
+            <section class="catalog-section"><div class="section-heading"><div><p class="eyebrow">TU CATÁLOGO</p><h2>Productos y precios</h2><p class="muted">Actualizá precios y disponibilidad. Los cambios se reflejan en la tienda.</p></div><button id="addProductButton" class="primary-button" type="button">Agregar producto <span>＋</span></button></div>
+              <p id="catalogMessage" class="message" role="status"></p><div id="productList" class="product-list"></div>
+            </section>
+          </section>
+          <section class="workspace-view hidden" id="store-settings">
+            <div class="page-heading"><div><p class="eyebrow">PERSONALIZÁ TU TIENDA</p><h1>Identidad y diseño</h1><p class="muted">Editá cómo se ve tu tienda sin volver al asistente de creación.</p></div></div>
+            <section class="brand-section"><div class="section-heading"><div><p class="eyebrow">TU MARCA</p><h2>Presentación del negocio</h2></div></div>
+        <form id="storeForm" class="store-form">
+          <div class="form-field"><label for="storeNameInput">Nombre de la tienda *</label><input id="storeNameInput" maxlength="100" required></div>
+          <div class="form-field"><label for="storeTagline">Frase bajo el nombre</label><input id="storeTagline" maxlength="80" placeholder="Hecho con cariño"></div>
+          <div class="form-field wide"><label for="storeWelcome">Título de bienvenida</label><input id="storeWelcome" maxlength="120" placeholder="Lo mejor de tu negocio, acá"></div>
+          <div class="form-field wide"><label for="storeDescription">Descripción</label><textarea id="storeDescription" maxlength="500" rows="3" placeholder="Contá brevemente qué hace especial a tu tienda"></textarea></div>
+          <div class="form-field"><label for="storeMenuTitle">Título del catálogo</label><input id="storeMenuTitle" maxlength="80" placeholder="Nuestros productos"></div>
+          <div class="form-field"><label for="storeLogoText">Iniciales del logo</label><input id="storeLogoText" maxlength="3" placeholder="GS"></div>
+          <div class="form-field"><label for="storeTemplate">Estilo visual</label><select id="storeTemplate"><option value="huerta">Huerta · Natural y serena</option><option value="costa">Costa · Fresca y contemporánea</option><option value="barro">Barro · Cálida y artesanal</option></select></div>
+          <div class="form-field"><label for="storeColor">Color principal</label><div class="color-field"><input id="storeColor" type="color" value="#24445a"><span id="storeColorValue">#24445A</span></div></div>
+          <div class="form-field wide"><label for="storeContactPhone">Teléfono de contacto para clientes</label><input id="storeContactPhone" type="tel" maxlength="30" placeholder="Opcional"></div>
+          <div class="form-field wide"><label>Logo de la tienda</label><div class="logo-editor"><div id="logoPreview" class="logo-preview">GS</div><label class="secondary-button upload-logo" for="storeLogoFile">Subir imagen<input id="storeLogoFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="removeLogoButton" class="text-button hidden" type="button">Quitar imagen</button><small>PNG, JPG o WebP · hasta 5 MB</small></div></div>
+          <p id="storeMessage" class="message wide" role="status"></p><div class="store-form-actions wide"><button class="primary-button" type="submit">Guardar identidad y diseño</button></div>
+        </form>
+      </section>
+          </section>
+          <section id="ordersView" class="workspace-view hidden">
+            <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE TRABAJO</p><h1>Pedidos</h1><p id="ordersMessage" class="muted" role="status">Los pedidos aparecerán acá.</p></div><button id="refreshOrdersButton" class="secondary-button" type="button">Actualizar ↻</button></div>
+            <div id="ordersList" class="orders-list"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="productDialog" class="dialog-backdrop hidden" role="presentation">
+    <section class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+      <div class="dialog-heading"><div><p class="eyebrow">CATÁLOGO</p><h2 id="dialogTitle">Agregar producto</h2></div><button id="closeDialogButton" class="close-button" type="button" aria-label="Cerrar">×</button></div>
+      <form id="productForm">
+        <label for="productName">Nombre *</label><input id="productName" name="name" maxlength="120" required>
+        <label for="productDescription">Descripción</label><textarea id="productDescription" name="description" maxlength="500" rows="3"></textarea>
+        <div class="form-row"><div><label for="productPrice">Precio (ARS) *</label><input id="productPrice" name="price" type="number" min="0" step="0.01" required></div><div><label for="productCategory">Categoría</label><input id="productCategory" name="category" maxlength="80" placeholder="Ej. Granolas"></div></div>
+        <label class="availability-field"><input id="productAvailable" name="available" type="checkbox" checked><span>Disponible para la venta</span></label>
+        <p id="dialogMessage" class="message" role="status"></p><div class="dialog-actions"><button id="cancelDialogButton" class="secondary-button" type="button">Cancelar</button><button class="primary-button" type="submit">Guardar producto</button></div>
+      </form>
+    </section>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../creator/supabase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
