@@ -49,3 +49,10 @@
 .order-total{display:flex;justify-content:space-between;padding-top:11px;border-top:1px solid var(--line);font-size:11px}
 .customer-note{padding:9px 10px;border-radius:7px;background:#f4f4ee}
 @media(max-width:700px){.order-card{padding:15px}.order-customer{align-items:start;flex-direction:column}}
+.sidebar-account-actions{display:grid;gap:4px;margin-top:auto}
+.sidebar-password-button{padding:10px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--brand);text-align:left;font:600 10px var(--sans);cursor:pointer}
+.sidebar-signout{margin-top:0}
+.dialog-card>.muted{margin:-8px 0 15px}
+.dialog-card form label{font-size:11px;font-weight:700}
+.dialog-card form input:not([type=checkbox]){width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);font:12px var(--sans)}
+@media(max-width:800px){.sidebar-account-actions{margin-top:0;grid-template-columns:1fr auto;align-items:center}.sidebar-password-button{border-top:0;padding:8px 4px}.sidebar-signout{padding:8px 4px}}

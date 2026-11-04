@@ -419,6 +419,39 @@
   $("#cancelDialogButton").addEventListener("click", closeDialog);
   $("#productForm").addEventListener("submit", saveProduct);
   $("#productDialog").addEventListener("click", event => { if (event.target === event.currentTarget) closeDialog(); });
+  function closePasswordDialog() {
+    $("#passwordChangeDialog").classList.add("hidden");
+    $("#passwordChangeForm").reset();
+    $("#passwordChangeMessage").textContent = "";
+  }
+  $("#changePasswordButton").addEventListener("click", () => {
+    $("#passwordChangeForm").reset();
+    $("#passwordChangeMessage").textContent = "";
+    $("#passwordChangeDialog").classList.remove("hidden");
+    $("#accountNewPassword").focus();
+  });
+  $("#closePasswordDialog").addEventListener("click", closePasswordDialog);
+  $("#cancelPasswordDialog").addEventListener("click", closePasswordDialog);
+  $("#passwordChangeDialog").addEventListener("click", event => { if (event.target === event.currentTarget) closePasswordDialog(); });
+  $("#passwordChangeForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    const password = $("#accountNewPassword").value;
+    if (password !== $("#accountConfirmPassword").value) {
+      $("#passwordChangeMessage").textContent = "Las contraseñas no coinciden.";
+      return;
+    }
+    const button = event.currentTarget.querySelector('[type="submit"]');
+    button.disabled = true;
+    $("#passwordChangeMessage").textContent = "Guardando contraseña…";
+    try {
+      const { error } = await client.auth.updateUser({ password });
+      if (error) throw error;
+      $("#passwordChangeMessage").textContent = "Contraseña actualizada. La próxima vez podés ingresar con tu correo y esta contraseña.";
+      event.currentTarget.reset();
+    } catch (error) {
+      $("#passwordChangeMessage").textContent = `No pudimos actualizarla: ${error.message}`;
+    } finally { button.disabled = false; }
+  });
   $("#signOutButton").addEventListener("click", async () => { await client.auth.signOut(); authScreen("Sesión cerrada."); });
   init();
 })();

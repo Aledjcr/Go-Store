@@ -38,7 +38,7 @@
             <a class="workspace-nav-link" href="#store-settings" data-view-link="store"><span aria-hidden="true">✎</span>Editar tienda</a>
             <a class="workspace-nav-link" href="../docs/"><span aria-hidden="true">◉</span>Documentación</a>
           </nav>
-          <button id="signOutButton" class="sidebar-signout" type="button">Cerrar sesión</button>
+          <div class="sidebar-account-actions"><button id="changePasswordButton" class="sidebar-password-button" type="button">Crear o cambiar contraseña</button><button id="signOutButton" class="sidebar-signout" type="button">Cerrar sesión</button></div>
         </aside>
         <div class="workspace-content">
           <section id="productsView" class="workspace-view">
@@ -84,6 +84,13 @@
         <label class="availability-field"><input id="productAvailable" name="available" type="checkbox" checked><span>Disponible para la venta</span></label>
         <p id="dialogMessage" class="message" role="status"></p><div class="dialog-actions"><button id="cancelDialogButton" class="secondary-button" type="button">Cancelar</button><button class="primary-button" type="submit">Guardar producto</button></div>
       </form>
+    </section>
+  </div>
+  <div id="passwordChangeDialog" class="dialog-backdrop hidden" role="presentation">
+    <section class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="passwordChangeTitle">
+      <div class="dialog-heading"><div><p class="eyebrow">SEGURIDAD DE LA CUENTA</p><h2 id="passwordChangeTitle">Definí tu contraseña</h2></div><button id="closePasswordDialog" class="close-button" type="button" aria-label="Cerrar">×</button></div>
+      <p class="muted">Como ya iniciaste sesión, podés hacerlo ahora sin pedir otro correo.</p>
+      <form id="passwordChangeForm"><label for="accountNewPassword">Nueva contraseña</label><input id="accountNewPassword" type="password" required minlength="8" autocomplete="new-password"><label for="accountConfirmPassword">Confirmar contraseña</label><input id="accountConfirmPassword" type="password" required minlength="8" autocomplete="new-password"><p id="passwordChangeMessage" class="message" role="status"></p><div class="dialog-actions"><button id="cancelPasswordDialog" class="secondary-button" type="button">Cancelar</button><button class="primary-button" type="submit">Guardar contraseña</button></div></form>
     </section>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
