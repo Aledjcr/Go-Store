@@ -10,6 +10,12 @@
       .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "mi-tienda";
   }
 
+  const starterPalettes = {
+    huerta: { primary: "#536a43", secondary: "#eaf0e4", accent: "#d9b85d" },
+    costa: { primary: "#24445a", secondary: "#e7eff2", accent: "#e0a45a" },
+    barro: { primary: "#975d43", secondary: "#f2e7de", accent: "#d7ad4e" }
+  };
+
   function productId(product) {
     if (!product.id) product.id = crypto.randomUUID();
     return product.id;
@@ -48,6 +54,7 @@
 
     state.remoteStoreId ||= crypto.randomUUID();
     state.products.forEach(productId);
+    const palette = starterPalettes[state.template] || starterPalettes.costa;
     const store = {
       id: state.remoteStoreId,
       owner_id: user.id,
@@ -58,7 +65,9 @@
       welcome_title: state.slogan.trim() || null,
       menu_title: state.menuTitle.trim() || null,
       template_key: state.template,
-      primary_color: state.customGreen || (state.template === "huerta" ? "#536a43" : state.template === "barro" ? "#975d43" : "#24445a"),
+      primary_color: state.customGreen || palette.primary,
+      secondary_color: state.customSecondary || palette.secondary,
+      accent_color: state.customAccent || palette.accent,
       logo_text: state.logoText.trim() || null,
       status: state.storeStatus || "draft"
     };
@@ -210,7 +219,7 @@
     if (!client) throw new Error("Falta configurar Supabase.");
     const { data: store, error: storeError } = await client
       .from("stores")
-      .select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,logo_path,logo_text,status")
+      .select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,secondary_color,accent_color,logo_path,logo_text,status")
       .eq("id", storeId)
       .single();
     if (storeError) throw storeError;
@@ -244,6 +253,8 @@
       menuTitle: store.menu_title || "",
       template: store.template_key,
       customGreen: store.primary_color?.toLowerCase() === templateColor?.toLowerCase() ? "" : store.primary_color,
+      customSecondary: store.secondary_color || "",
+      customAccent: store.accent_color || "",
       logoText: store.logo_text || "",
       logo,
       storeStatus: store.status,

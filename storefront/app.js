@@ -107,7 +107,7 @@
     const client = createClient(config.url, config.anonKey);
     state.client = client;
     const { data: store, error: storeError } = await client.from("storefronts_public")
-      .select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,logo_path,logo_text")
+      .select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,secondary_color,accent_color,logo_path,logo_text")
       .eq("slug", slug).maybeSingle();
     if (storeError) return showError("No pudimos cargar esta tienda. Intentá nuevamente más tarde.");
     if (!store) return showError("No encontramos una tienda publicada con esa dirección.");
@@ -121,6 +121,8 @@
     state.categories = categoriesResult.data || [];
     state.products = productsResult.data || [];
     document.documentElement.style.setProperty("--brand", store.primary_color || "#24445a");
+    document.documentElement.style.setProperty("--surface", store.secondary_color || "#e7eff2");
+    document.documentElement.style.setProperty("--accent", store.accent_color || "#e0a45a");
     document.title = `${store.name} · Catálogo`;
     $("#storeName").textContent = store.name;
     $("#heroName").textContent = store.name;

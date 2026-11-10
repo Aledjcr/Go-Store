@@ -13,7 +13,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a id="adminHomeLink" href="./" class="brand header-wordmark"><strong>Go Store</strong></a>
+    <a id="adminHomeLink" href="./" class="brand header-wordmark"><strong>Go Store</strong></a><div class="topbar-actions"><a id="publicStoreLink" class="secondary-button hidden" target="_blank" rel="noopener">Ver tienda ↗</a></div>
   </header>
   <main class="shell">
     <section id="authScreen" class="auth-card">
@@ -42,7 +42,7 @@
         </aside>
         <div class="workspace-content">
           <section id="productsView" class="workspace-view">
-            <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE TRABAJO</p><h1>Productos</h1><p id="storeMeta" class="muted"></p></div><div class="heading-actions"><a id="publicStoreLink" class="secondary-button hidden" target="_blank" rel="noopener">Ver tienda ↗</a></div></div>
+            <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE TRABAJO</p><h1>Productos</h1><p id="storeMeta" class="muted"></p></div></div>
             <div class="summary-grid"><article class="summary-card"><span>Estado de la tienda</span><strong id="storeStatus">—</strong></article><article class="summary-card"><span>Productos en el catálogo</span><strong id="productCount">0</strong></article></div>
             <section class="catalog-section"><div class="section-heading"><div><p class="eyebrow">TU CATÁLOGO</p><h2>Productos y precios</h2><p class="muted">Actualizá precios y disponibilidad. Los cambios se reflejan en la tienda.</p></div><button id="addProductButton" class="primary-button" type="button">Agregar producto <span>＋</span></button></div>
               <p id="catalogMessage" class="message" role="status"></p><div id="productList" class="product-list"></div>
@@ -59,7 +59,20 @@
           <div class="form-field"><label for="storeMenuTitle">Título del catálogo</label><input id="storeMenuTitle" maxlength="80" placeholder="Nuestros productos"></div>
           <div class="form-field"><label for="storeLogoText">Iniciales del logo</label><input id="storeLogoText" maxlength="3" placeholder="GS"></div>
           <div class="form-field"><label for="storeTemplate">Estilo visual</label><select id="storeTemplate"><option value="huerta">Huerta · Natural y serena</option><option value="costa">Costa · Fresca y contemporánea</option><option value="barro">Barro · Cálida y artesanal</option></select></div>
-          <div class="form-field"><label for="storeColor">Color principal</label><div class="color-field"><input id="storeColor" type="color" value="#24445a"><span id="storeColorValue">#24445A</span></div></div>
+          <div class="form-field wide color-editor-field">
+            <div><p class="palette-section-label">Colores de la tienda</p><p class="muted">Elegí una combinación recomendada y ajustá cada tono a tu gusto.</p></div>
+            <div><p class="palette-section-label">Combinaciones recomendadas</p><div id="colorPaletteList" class="color-palette-grid" role="group" aria-label="Paletas de colores recomendadas"></div></div>
+            <div><p class="palette-section-label">Tus colores</p><div class="manual-color-grid">
+              <label class="manual-color-field" for="primaryColor">Principal <span id="primaryColorValue">#24445A</span><input id="primaryColor" type="color" value="#24445a"></label>
+              <label class="manual-color-field" for="secondaryColor">Secundario <span id="secondaryColorValue">#E7EFF2</span><input id="secondaryColor" type="color" value="#e7eff2"></label>
+              <label class="manual-color-field" for="accentColor">Acento <span id="accentColorValue">#E0A45A</span><input id="accentColor" type="color" value="#e0a45a"></label>
+            </div></div>
+            <div id="colorPalettePreview" class="color-palette-preview" aria-live="polite">
+              <div><small>VISTA PREVIA</small><strong>Tu marca, en armonía</strong></div>
+              <div class="preview-samples"><span class="preview-sample-brand">Marca</span><span class="preview-sample-surface">Catálogo</span><span class="preview-sample-accent">Detalle</span></div>
+              <button type="button">Explorar productos <span>→</span></button>
+            </div>
+          </div>
           <div class="form-field wide"><label for="storeContactPhone">Teléfono de contacto para clientes</label><input id="storeContactPhone" type="tel" maxlength="30" placeholder="Opcional"></div>
           <div class="form-field wide"><label>Logo de la tienda</label><div class="logo-editor"><div id="logoPreview" class="logo-preview">GS</div><label class="secondary-button upload-logo" for="storeLogoFile">Subir imagen<input id="storeLogoFile" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="removeLogoButton" class="text-button hidden" type="button">Quitar imagen</button><small>PNG, JPG o WebP · hasta 5 MB</small></div></div>
           <p id="storeMessage" class="message wide" role="status"></p><div class="store-form-actions wide"><button class="primary-button" type="submit">Guardar identidad y diseño</button></div>

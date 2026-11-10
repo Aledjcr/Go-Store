@@ -15,13 +15,67 @@
   let editingProductId = null;
   let selectedLogoFile = null;
   let removeCurrentLogo = false;
-  const templateColors = { huerta: "#536a43", costa: "#24445a", barro: "#975d43" };
+  const colorPalettes = [
+    { id: "huerta", name: "Huerta", primary: "#536a43", secondary: "#eaf0e4", accent: "#d9b85d" },
+    { id: "costa", name: "Costa", primary: "#24445a", secondary: "#e7eff2", accent: "#e0a45a" },
+    { id: "barro", name: "Barro", primary: "#975d43", secondary: "#f2e7de", accent: "#d7ad4e" },
+    { id: "lavanda", name: "Lavanda", primary: "#655686", secondary: "#f0ecf7", accent: "#dfa5b9" },
+    { id: "citricos", name: "Cítricos", primary: "#54752f", secondary: "#eff4d8", accent: "#e5c83d" },
+    { id: "bosque", name: "Bosque", primary: "#275c49", secondary: "#e4efe8", accent: "#d08357" },
+    { id: "atardecer", name: "Atardecer", primary: "#9b4f4d", secondary: "#f6eae4", accent: "#d9a14b" },
+    { id: "glaciar", name: "Glaciar", primary: "#356c79", secondary: "#e4f1f2", accent: "#d89076" },
+    { id: "cacao", name: "Cacao", primary: "#65493c", secondary: "#f1e9e3", accent: "#c69a6c" },
+    { id: "jardin", name: "Jardín", primary: "#4a6756", secondary: "#f0efe0", accent: "#d77e8b" }
+  ];
+  const defaultPaletteByTemplate = Object.fromEntries(colorPalettes.slice(0, 3).map(palette => [palette.id, palette]));
+
+  function updateColorPalettePreview() {
+    const colors = {
+      primary: $("#primaryColor").value,
+      secondary: $("#secondaryColor").value,
+      accent: $("#accentColor").value
+    };
+    $("#primaryColorValue").textContent = colors.primary.toUpperCase();
+    $("#secondaryColorValue").textContent = colors.secondary.toUpperCase();
+    $("#accentColorValue").textContent = colors.accent.toUpperCase();
+    const preview = $("#colorPalettePreview");
+    preview.style.setProperty("--preview-brand", colors.primary);
+    preview.style.setProperty("--preview-surface", colors.secondary);
+    preview.style.setProperty("--preview-accent", colors.accent);
+    const selectedId = colorPalettes.find(palette =>
+      palette.primary === colors.primary.toLowerCase() &&
+      palette.secondary === colors.secondary.toLowerCase() &&
+      palette.accent === colors.accent.toLowerCase()
+    )?.id;
+    document.querySelectorAll("[data-color-palette]").forEach(button => {
+      const selected = button.dataset.colorPalette === selectedId;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+  }
+
+  function renderColorPaletteOptions() {
+    $("#colorPaletteList").innerHTML = colorPalettes.map(palette => `<button class="color-palette-option" type="button" data-color-palette="${palette.id}" aria-pressed="false">
+      <span class="palette-swatches" aria-hidden="true"><i style="--swatch:${palette.primary}"></i><i style="--swatch:${palette.secondary}"></i><i style="--swatch:${palette.accent}"></i></span>
+      <span class="palette-option-name">${palette.name}</span><span class="palette-option-action">Usar</span>
+    </button>`).join("");
+  }
+
+  function applyColorPalette(id) {
+    const palette = colorPalettes.find(item => item.id === id);
+    if (!palette) return;
+    $("#primaryColor").value = palette.primary;
+    $("#secondaryColor").value = palette.secondary;
+    $("#accentColor").value = palette.accent;
+    updateColorPalettePreview();
+  }
 
   function authScreen(message = "") {
     $("#authScreen").classList.remove("hidden");
     $("#passwordRecoveryCard").classList.add("hidden");
     $("#managerPanel").classList.add("hidden");
     $("#signOutButton").classList.add("hidden");
+    $("#publicStoreLink").classList.add("hidden");
     $("#authMessage").textContent = message;
   }
 
@@ -134,8 +188,8 @@
 
   async function loadStore() {
     const requestedId = new URLSearchParams(location.search).get("store");
-    let query = client.from("stores").select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,logo_path,logo_text,contact_phone,status,updated_at").order("updated_at", { ascending: false }).limit(1);
-    if (requestedId) query = client.from("stores").select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,logo_path,logo_text,contact_phone,status,updated_at").eq("id", requestedId).limit(1);
+    let query = client.from("stores").select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,secondary_color,accent_color,logo_path,logo_text,contact_phone,status,updated_at").order("updated_at", { ascending: false }).limit(1);
+    if (requestedId) query = client.from("stores").select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,secondary_color,accent_color,logo_path,logo_text,contact_phone,status,updated_at").eq("id", requestedId).limit(1);
     const { data, error } = await query;
     if (error) throw error;
     store = data?.[0] || null;
@@ -154,8 +208,12 @@
     $("#storeMenuTitle").value = store.menu_title || "";
     $("#storeLogoText").value = store.logo_text || "";
     $("#storeTemplate").value = store.template_key || "costa";
-    $("#storeColor").value = store.primary_color || templateColors[store.template_key] || templateColors.costa;
-    $("#storeColorValue").textContent = $("#storeColor").value.toUpperCase();
+    const defaultPalette = defaultPaletteByTemplate[store.template_key] || defaultPaletteByTemplate.costa;
+    $("#primaryColor").value = store.primary_color || defaultPalette.primary;
+    $("#secondaryColor").value = store.secondary_color || defaultPalette.secondary;
+    $("#accentColor").value = store.accent_color || defaultPalette.accent;
+    renderColorPaletteOptions();
+    updateColorPalettePreview();
     $("#storeContactPhone").value = store.contact_phone || "";
     setLogoPreview();
     if (store.status === "published") {
@@ -216,7 +274,9 @@
         menu_title: $("#storeMenuTitle").value.trim() || null,
         logo_text: $("#storeLogoText").value.trim().toUpperCase() || null,
         template_key: $("#storeTemplate").value,
-        primary_color: $("#storeColor").value,
+        primary_color: $("#primaryColor").value,
+        secondary_color: $("#secondaryColor").value,
+        accent_color: $("#accentColor").value,
         contact_phone: $("#storeContactPhone").value.trim() || null,
         logo_path: nextLogoPath
       };
@@ -410,10 +470,10 @@
     setLogoPreview();
     if (!removeCurrentLogo) $("#storeMessage").textContent = "La imagen seleccionada se quitó del borrador. Guardá para aplicar el cambio.";
   });
-  $("#storeColor").addEventListener("input", event => { $("#storeColorValue").textContent = event.currentTarget.value.toUpperCase(); });
-  $("#storeTemplate").addEventListener("change", event => {
-    $("#storeColor").value = templateColors[event.currentTarget.value] || templateColors.costa;
-    $("#storeColorValue").textContent = $("#storeColor").value.toUpperCase();
+  ["#primaryColor", "#secondaryColor", "#accentColor"].forEach(selector => $(selector).addEventListener("input", updateColorPalettePreview));
+  $("#colorPaletteList").addEventListener("click", event => {
+    const button = event.target.closest("[data-color-palette]");
+    if (button) applyColorPalette(button.dataset.colorPalette);
   });
   $("#closeDialogButton").addEventListener("click", closeDialog);
   $("#cancelDialogButton").addEventListener("click", closeDialog);
