@@ -12,6 +12,11 @@
   let store = null;
   let products = [];
   let categories = [];
+  let storeOrders = [];
+  let orderItemsByOrder = new Map();
+  let ordersView = "board";
+  let draggedOrderId = null;
+  const pendingOrderUpdates = new Set();
   let editingProductId = null;
   let selectedLogoFile = null;
   let removeCurrentLogo = false;
@@ -145,6 +150,99 @@
     renderProducts();
   }
 
+  function renderOrderCard(order, mode = "board") {
+    const compact = mode === "board";
+    const items = orderItemsByOrder.get(order.id) || [];
+    const visibleItems = items.slice(0, compact ? 2 : 4);
+    const orderItems = visibleItems.map(item => `<li><span>${Number(item.quantity) || 0} × ${escape(item.product_name)}</span><strong>${orderMoney(item.line_total, order.currency)}</strong></li>`).join("");
+    const remainingItems = items.length - visibleItems.length;
+    const date = new Date(order.created_at).toLocaleString("es-AR", { dateStyle: compact ? "short" : "medium", timeStyle: "short" });
+    const delivery = order.fulfillment_method === "delivery";
+    const fulfillment = delivery ? "Delivery" : "Retiro";
+    const fulfillmentDetail = delivery ? (order.delivery_address || "Dirección no indicada") : "Retiro por el local";
+    const classes = compact ? "order-card order-board-card" : "order-card order-list-card";
+    return `<article class="${classes}" ${compact ? `draggable="true"` : ""} data-order-id="${escape(order.id)}">
+      <header class="order-card-head"><div><span class="order-ref">Pedido ${escape(order.reference)}</span><time>${escape(date)}</time></div>${compact ? `<span class="order-drag-handle" aria-hidden="true" title="Arrastrá para cambiar de estado">⠿</span>` : ""}</header>
+      <div class="order-customer"><div><strong>${escape(order.customer_name)}</strong><a href="tel:${escape(order.customer_phone)}">${escape(order.customer_phone)}</a></div></div>
+      <div class="order-fulfillment"><span class="fulfillment-chip ${delivery ? "delivery" : "pickup"}">${fulfillment}</span><span>${escape(fulfillmentDetail)}</span></div>
+      <ul class="order-items">${orderItems || `<li class="order-no-items">Sin detalle de productos</li>`}${remainingItems > 0 ? `<li class="order-more-items">+ ${remainingItems} ${remainingItems === 1 ? "producto" : "productos"} más</li>` : ""}</ul>
+      ${order.customer_note ? `<p class="customer-note"><b>Nota:</b> ${escape(order.customer_note)}</p>` : ""}
+      <footer class="order-card-footer"><div class="order-total"><span>Total</span><strong>${orderMoney(order.subtotal, order.currency)}</strong></div><label class="status-picker"><span>Mover a</span><select data-status-order="${escape(order.id)}" aria-label="Mover pedido ${escape(order.reference)} a otro estado" ${pendingOrderUpdates.has(order.id) ? "disabled" : ""}>${Object.entries(orderStatuses).map(([value, label]) => `<option value="${value}" ${value === order.status ? "selected" : ""}>${label}</option>`).join("")}</select></label></footer>
+    </article>`;
+  }
+
+  function bindOrderCardEvents(container, isBoard = false) {
+    container.querySelectorAll("[data-status-order]").forEach(select => select.addEventListener("change", () => updateOrderStatus(select.dataset.statusOrder, select.value)));
+    if (!isBoard) return;
+    container.querySelectorAll("[data-order-id]").forEach(card => {
+      card.addEventListener("dragstart", event => {
+        if (event.target.closest("a,button,select")) { event.preventDefault(); return; }
+        draggedOrderId = card.dataset.orderId;
+        card.classList.add("is-dragging");
+        event.dataTransfer?.setData("text/plain", draggedOrderId);
+        if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+      });
+      card.addEventListener("dragend", () => {
+        draggedOrderId = null;
+        card.classList.remove("is-dragging");
+        container.querySelectorAll(".order-column-list.is-drop-target").forEach(zone => zone.classList.remove("is-drop-target"));
+      });
+    });
+    container.querySelectorAll("[data-drop-status]").forEach(zone => {
+      zone.addEventListener("dragover", event => { event.preventDefault(); zone.classList.add("is-drop-target"); if (event.dataTransfer) event.dataTransfer.dropEffect = "move"; });
+      zone.addEventListener("dragleave", event => { if (!zone.contains(event.relatedTarget)) zone.classList.remove("is-drop-target"); });
+      zone.addEventListener("drop", event => {
+        event.preventDefault();
+        zone.classList.remove("is-drop-target");
+        const orderId = event.dataTransfer?.getData("text/plain") || draggedOrderId;
+        const nextStatus = zone.dataset.dropStatus;
+        if (orderId && nextStatus) updateOrderStatus(orderId, nextStatus);
+      });
+    });
+  }
+
+  function renderOrders() {
+    const statuses = Object.entries(orderStatuses);
+    const board = $("#ordersBoard"), list = $("#ordersList");
+    board.classList.toggle("hidden", ordersView !== "board");
+    list.classList.toggle("hidden", ordersView !== "list");
+    $("#ordersViewToggle").querySelectorAll("[data-orders-view]").forEach(button => {
+      const active = button.dataset.ordersView === ordersView;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    board.innerHTML = statuses.map(([status, label]) => {
+      const matchingOrders = storeOrders.filter(order => order.status === status);
+      return `<section class="order-column" aria-label="${label}, ${matchingOrders.length} pedidos"><header class="order-column-head"><div><span class="order-status-dot status-${status}" aria-hidden="true"></span><h2>${label}</h2></div><span class="order-column-count">${matchingOrders.length}</span></header><div class="order-column-list" data-drop-status="${status}">${matchingOrders.length ? matchingOrders.map(order => renderOrderCard(order, "board")).join("") : `<p class="order-column-empty">Soltá pedidos acá</p>`}</div></section>`;
+    }).join("");
+    list.innerHTML = storeOrders.length
+      ? storeOrders.map(order => renderOrderCard(order, "list")).join("")
+      : `<div class="orders-empty"><span aria-hidden="true">▤</span><strong>Todavía no recibiste pedidos</strong><p>Los nuevos pedidos van a aparecer acá.</p></div>`;
+    bindOrderCardEvents(board, true);
+    bindOrderCardEvents(list);
+  }
+
+  async function updateOrderStatus(orderId, nextStatus) {
+    const order = storeOrders.find(item => item.id === orderId);
+    if (!order || !orderStatuses[nextStatus] || order.status === nextStatus || pendingOrderUpdates.has(orderId)) return;
+    const previousStatus = order.status;
+    pendingOrderUpdates.add(orderId);
+    order.status = nextStatus;
+    renderOrders();
+    $("#ordersMessage").textContent = `Moviendo pedido ${order.reference} a ${orderStatuses[nextStatus]}…`;
+    try {
+      const { error } = await client.from("orders").update({ status: nextStatus }).eq("store_id", store.id).eq("id", orderId);
+      if (error) throw error;
+      $("#ordersMessage").textContent = `Pedido ${order.reference} actualizado: ${orderStatuses[nextStatus]}.`;
+    } catch (error) {
+      order.status = previousStatus;
+      $("#ordersMessage").textContent = `No pudimos actualizar el estado: ${error.message}`;
+    } finally {
+      pendingOrderUpdates.delete(orderId);
+      renderOrders();
+    }
+  }
+
   async function loadOrders() {
     $("#ordersMessage").textContent = "Cargando pedidos…";
     try {
@@ -160,32 +258,17 @@
         if (result.error) throw result.error;
         items = result.data || [];
       }
-      const byOrder = new Map();
-      items.forEach(item => { if (!byOrder.has(item.order_id)) byOrder.set(item.order_id, []); byOrder.get(item.order_id).push(item); });
-      $("#ordersMessage").textContent = orders.length ? `${orders.length} pedidos recientes` : "Todavía no recibiste pedidos.";
-      $("#ordersList").innerHTML = (orders || []).map(order => {
-        const date = new Date(order.created_at).toLocaleString("es-AR", { dateStyle: "medium", timeStyle: "short" });
-        const fulfillment = order.fulfillment_method === "delivery" ? `Delivery · ${escape(order.delivery_address)}` : "Retiro por el local";
-        const orderItems = (byOrder.get(order.id) || []).map(item => `<li><span>${Number(item.quantity) || 0} × ${escape(item.product_name)}</span><strong>${orderMoney(item.line_total, order.currency)}</strong></li>`).join("");
-        return `<article class="order-card"><header class="order-head"><div><span class="order-ref">Pedido ${escape(order.reference)}</span><time>${escape(date)}</time></div><label class="status-picker"><span>Estado</span><select data-status-order="${escape(order.id)}">${Object.entries(orderStatuses).map(([value, label]) => `<option value="${value}" ${value === order.status ? "selected" : ""}>${label}</option>`).join("")}</select></label></header><div class="order-customer"><strong>${escape(order.customer_name)}</strong><a href="tel:${escape(order.customer_phone)}">${escape(order.customer_phone)}</a></div><p class="fulfillment">${fulfillment}</p><ul class="order-items">${orderItems}</ul>${order.customer_note ? `<p class="customer-note"><b>Nota:</b> ${escape(order.customer_note)}</p>` : ""}<footer class="order-total"><span>Total del pedido</span><strong>${orderMoney(order.subtotal, order.currency)}</strong></footer></article>`;
-      }).join("");
-      $("#ordersList").querySelectorAll("[data-status-order]").forEach(select => select.addEventListener("change", async () => {
-        select.disabled = true;
-        try {
-          const { error } = await client.from("orders").update({ status: select.value }).eq("store_id", store.id).eq("id", select.dataset.statusOrder);
-          if (error) throw error;
-          $("#ordersMessage").textContent = "Estado del pedido actualizado.";
-        } catch (error) {
-          $("#ordersMessage").textContent = `No pudimos actualizar el estado: ${error.message}`;
-          await loadOrders();
-        } finally { select.disabled = false; }
-      }));
+      orderItemsByOrder = new Map();
+      items.forEach(item => { if (!orderItemsByOrder.has(item.order_id)) orderItemsByOrder.set(item.order_id, []); orderItemsByOrder.get(item.order_id).push(item); });
+      storeOrders = orders || [];
+      $("#ordersMessage").textContent = storeOrders.length ? `${storeOrders.length} pedidos recientes · arrastrá una tarjeta para cambiar su estado` : "Todavía no recibiste pedidos.";
+      renderOrders();
     } catch (error) {
       $("#ordersMessage").textContent = `No pudimos cargar los pedidos: ${error.message}`;
+      $("#ordersBoard").replaceChildren();
       $("#ordersList").replaceChildren();
     }
   }
-
   async function loadStore() {
     const requestedId = new URLSearchParams(location.search).get("store");
     let query = client.from("stores").select("id,slug,name,tagline,description,welcome_title,menu_title,template_key,primary_color,secondary_color,accent_color,logo_path,logo_text,contact_phone,status,updated_at").order("updated_at", { ascending: false }).limit(1);
@@ -197,6 +280,7 @@
       location.replace("../creator/");
       return;
     }
+    ordersView = localStorage.getItem(`goStoreOrdersView:${store.id}`) === "list" ? "list" : "board";
     $("#sidebarStoreName").textContent = store.name;
     $("#adminHomeLink").href = `./?store=${encodeURIComponent(store.id)}`;
     $("#storeMeta").textContent = `/${store.slug}`;
@@ -448,6 +532,13 @@
   document.querySelectorAll("[data-view-link]").forEach(link => link.addEventListener("click", () => showWorkspaceView(link.dataset.viewLink, true)));
   window.addEventListener("hashchange", () => showWorkspaceView(location.hash === "#store-settings" ? "store" : location.hash.slice(1)));
   $("#refreshOrdersButton").addEventListener("click", loadOrders);
+  $("#ordersViewToggle").addEventListener("click", event => {
+    const button = event.target.closest("[data-orders-view]");
+    if (!button) return;
+    ordersView = button.dataset.ordersView;
+    if (store?.id) localStorage.setItem(`goStoreOrdersView:${store.id}`, ordersView);
+    renderOrders();
+  });
   $("#storeForm").addEventListener("submit", saveStoreSettings);
   $("#storeLogoText").addEventListener("input", () => { if ((!store?.logo_path || removeCurrentLogo) && !selectedLogoFile) setLogoPreview(); });
   $("#storeLogoFile").addEventListener("change", event => {

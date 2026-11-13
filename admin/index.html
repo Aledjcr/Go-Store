@@ -80,8 +80,9 @@
       </section>
           </section>
           <section id="ordersView" class="workspace-view hidden">
-            <div class="page-heading"><div><p class="eyebrow">TU ESPACIO DE TRABAJO</p><h1>Pedidos</h1><p id="ordersMessage" class="muted" role="status">Los pedidos aparecerán acá.</p></div><button id="refreshOrdersButton" class="secondary-button" type="button">Actualizar ↻</button></div>
-            <div id="ordersList" class="orders-list"></div>
+            <div class="page-heading orders-page-heading"><div><p class="eyebrow">TU ESPACIO DE TRABAJO</p><h1>Pedidos</h1><p id="ordersMessage" class="muted" role="status">Los pedidos aparecerán acá.</p></div><div class="orders-heading-actions"><div id="ordersViewToggle" class="orders-view-toggle" role="group" aria-label="Vista de pedidos"><button type="button" data-orders-view="board" aria-pressed="true">▦ Tablero</button><button type="button" data-orders-view="list" aria-pressed="false">☰ Lista</button></div><button id="refreshOrdersButton" class="secondary-button" type="button">Actualizar ↻</button></div></div>
+            <div id="ordersBoard" class="orders-board" aria-label="Tablero de pedidos por estado"></div>
+            <div id="ordersList" class="orders-list hidden" aria-label="Lista de pedidos"></div>
           </section>
         </div>
       </div>
